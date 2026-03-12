@@ -1,4 +1,4 @@
-version: '3.8'
+name: tiktok-minor
 
 services:
   # PostgreSQL Database
@@ -39,8 +39,8 @@ services:
   # Main application
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
       args:
         DATABASE_URL: postgresql://tiktok_miner_user:${DB_PASSWORD:-tiktok_miner_password}@postgres:5432/tiktok_miner
         DIRECT_URL: postgresql://tiktok_miner_user:${DB_PASSWORD:-tiktok_miner_password}@postgres:5432/tiktok_miner
@@ -83,8 +83,8 @@ services:
   # Discovery pipeline worker
   worker:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
     container_name: tiktok-miner-worker
     restart: unless-stopped
     command: ["bun", "run", "worker"]
@@ -117,8 +117,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/ssl:/etc/nginx/ssl:ro
       - nginx_cache:/var/cache/nginx
     depends_on:
       - app

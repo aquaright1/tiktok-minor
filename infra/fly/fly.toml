@@ -7,7 +7,7 @@ app = "tiktok-miner"
 primary_region = "sjc"   
 
 [build]
- dockerfile = "Dockerfile"
+ dockerfile = "../docker/Dockerfile"
   
 [env]
   # App Configuration

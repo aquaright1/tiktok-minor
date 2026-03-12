@@ -14,10 +14,12 @@ TikTok Miner is a creator discovery and analytics application. The active codeba
 ```text
 tiktok-minor/
 ├── app/                  # Main Next.js application and CLI
+├── infra/                # Deployment, container, and platform config
 ├── docs/                 # Project documentation and reference guides
-├── specs/                # Product and technical specs
-├── docker-compose.yml    # Local service orchestration
-└── Dockerfile            # Container build for the app
+├── tooling/              # Repo-level helper scripts and shared types
+├── archive/              # Historical notes and log captures
+├── data/                 # Local fixtures, configs, and sample outputs
+└── specs/                # Product and technical specs
 ```
 
 Key app directories:
@@ -31,6 +33,15 @@ app/
 ├── prisma/               # Prisma schema and migrations
 ├── config/               # Tooling config, including Playwright
 └── .env.example          # Environment template
+```
+
+Infrastructure directories:
+
+```text
+infra/
+├── docker/               # Dockerfile and compose stack
+├── fly/                  # Fly.io deployment config
+└── nginx/                # Reverse proxy config and TLS mounts
 ```
 
 ## Prerequisites
@@ -102,15 +113,15 @@ bun run test:coverage
 
 ## Docker
 
-The repo includes a root `docker-compose.yml` and `Dockerfile` for containerized runs:
+The repo keeps container and deployment config under `infra/`:
 
 ```bash
-docker compose up -d
-docker compose logs -f
-docker compose down
+docker compose -f infra/docker/docker-compose.yml up -d
+docker compose -f infra/docker/docker-compose.yml logs -f
+docker compose -f infra/docker/docker-compose.yml down
 ```
 
-Check the compose file before first run and make sure the required environment variables are available to the app container.
+Check the compose file before first run and make sure the required environment variables are available to the app container. Fly.io configuration now lives at `infra/fly/fly.toml`.
 
 ## Documentation
 
@@ -118,6 +129,7 @@ Check the compose file before first run and make sure the required environment v
 - [API setup guide](./docs/API_SETUP_GUIDE.md)
 - [Project structure](./docs/project-structure.md)
 - [Creator discovery architecture](./docs/creator-discovery-architecture.md)
+- [Deployment guide](./docs/deployment-guide.md)
 - [Testing guide](./docs/testing-guide.md)
 
 ## Notes

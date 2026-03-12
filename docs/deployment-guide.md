@@ -116,7 +116,16 @@ LOG_LEVEL=info
 
 ### Option 1: Docker Deployment
 
-Create `Dockerfile`:
+The checked-in deployment assets now live under `/infra`:
+
+- `/infra/docker/Dockerfile`
+- `/infra/docker/docker-compose.yml`
+- `/infra/fly/fly.toml`
+- `/infra/nginx/nginx.conf`
+
+If you use the existing repository setup, start from those files. The example below shows the shape of a production Docker deployment:
+
+Create `infra/docker/Dockerfile`:
 ```dockerfile
 FROM node:18-alpine AS base
 
@@ -167,7 +176,7 @@ ENV PORT 3000
 CMD ["node", "server.js"]
 ```
 
-Create `docker-compose.yml`:
+Create `infra/docker/docker-compose.yml`:
 ```yaml
 version: '3.8'
 
@@ -208,7 +217,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - app

@@ -1,100 +1,72 @@
 # Project Structure
 
-This document outlines the organization and structure of the Shadow Bee codebase.
+This document describes the current repository layout for TikTok Miner.
 
 ## Root Directory
 
-- `/app` - Main application code
-- `/docs` - Project documentation
-- `/specs` - Specifications and requirements
-- `/.github` - GitHub related configurations including workflows
+- `/app` - Main Next.js application, API routes, CLI, tests, and Prisma schema
+- `/infra` - Deployment assets, including Docker, Fly.io, and Nginx config
+- `/docs` - Project documentation and reference material
+- `/tooling` - Repo-level helper scripts and shared utility types
+- `/archive` - Historical notes and saved log output
+- `/data` - Local configs, SQL helpers, sample scraped profiles, and exports
+- `/specs` - Product and technical specifications
 
 ## Application Directory (`/app`)
 
-### Frontend
+### Product Surface
 
-- `/app/app` - Next.js application pages and routes
-  - `/app/app/api` - API routes
-  - `/app/app/(auth-pages)` - Authentication pages
-  - `/app/app/results` - Results and analytics pages
-- `/app/components` - Reusable React components
-  - `/app/components/ui` - UI components from shadcn/ui
-  - `/app/components/layouts` - Layout components
-  - `/app/components/forms` - Form components
+- `/app/app` - Next.js routes and server actions
+- `/app/components` - Reusable UI and feature components
+- `/app/hooks` - React hooks
+- `/app/lib` - Core logic, integrations, services, and shared app types
+- `/app/cli` - Bun CLI entrypoints and handlers
 
-### Backend
+### Data And Tooling
 
-- `/app/lib` - Library code and utilities
-  - `/app/lib/email` - Email client implementations
-  - `/app/lib/github` - GitHub API integrations
-  - `/app/lib/database` - Database operations
-  - `/app/lib/ai` - AI integrations
-- `/app/prisma` - Prisma ORM schema and migrations
-- `/app/cli` - Command-line interface tools
+- `/app/prisma` - Prisma schema and migrations
+- `/app/scripts` - App-local scripts and workflow utilities
+- `/app/config` - Test and tooling configuration
+- `/app/e2e` - Playwright test suites and page objects
+- `/app/__tests__` - Jest unit and integration tests
 
-### Configuration
+### Key Config Files
 
-- `/app/public` - Static assets
-- `/app/.env.example` - Example environment variables
-- `/app/tailwind.config.cjs` - Tailwind CSS configuration
+- `/app/package.json` - Primary script entrypoints and dependencies
+- `/app/.env.example` - Environment template
+- `/app/next.config.mjs` - Next.js configuration
 - `/app/tsconfig.json` - TypeScript configuration
-- `/app/next.config.js` - Next.js configuration
+
+## Infrastructure Directory (`/infra`)
+
+- `/infra/docker/Dockerfile` - Container build for the app image
+- `/infra/docker/docker-compose.yml` - Local multi-service stack
+- `/infra/fly/fly.toml` - Fly.io deployment configuration
+- `/infra/nginx/nginx.conf` - Reverse proxy configuration
+
+## Tooling Directory (`/tooling`)
+
+- `/tooling/scripts` - Repo-level maintenance and data helper scripts
+- `/tooling/types` - Shared utility types that are not part of the app runtime
+
+## Archive Directory (`/archive`)
+
+- `/archive/logs` - Saved troubleshooting logs and one-off outputs
+- `/archive/notes` - Historical repo notes that are no longer source-of-truth docs
 
 ## Documentation Directory (`/docs`)
 
-- `/docs/architecture.mmd` - Architecture diagram in Mermaid format
-- `/docs/code-reference.md` - Code reference documentation
-- `/docs/project-structure.md` - This document describing project structure
+- `/docs/project-structure.md` - This structure guide
+- `/docs/creator-discovery-architecture.md` - System architecture reference
+- `/docs/deployment-guide.md` - Deployment workflows and environment notes
+- `/docs/testing-guide.md` - Testing workflows
 
-## CLI Tools
+## Source Of Truth
 
-The CLI tools in the `/app/cli` directory provide various functionalities:
+Some older documents still refer to earlier project names and experiments. For current runtime behavior, prefer:
 
-- GitHub repository and user analysis
-- Trending developers and repositories tracking
-- User profile enrichment
-- Email operations
-- Database operations
-
-## Component Structure
-
-Components follow a consistent structure:
-
-```
-ComponentName/
-  ├── index.ts       # Re-exports for cleaner imports
-  ├── ComponentName.tsx  # Main component implementation
-  ├── ComponentName.test.tsx  # Component tests
-  └── useComponentName.ts  # Component-specific hooks (if needed)
-```
-
-## API Routes
-
-API routes follow RESTful conventions and are organized by resource:
-
-- `/app/app/api/candidates/[...params].ts` - Candidate-related endpoints
-- `/app/app/api/repositories/[...params].ts` - Repository-related endpoints
-- `/app/app/api/users/[...params].ts` - User-related endpoints
-
-## CI/CD Configuration
-
-Continuous Integration and Continuous Deployment are configured using GitHub Actions:
-
-- `/.github/workflows/test.yml` - Test workflow that runs Bun tests and reports coverage
-- `/codecov.yml` - Codecov configuration for coverage reporting
-
-The CI pipeline includes:
-- Running tests on every push to main/master and pull requests
-- Generating and uploading test coverage reports
-- Storing coverage artifacts for 7 days
-
-## Database Schema
-
-The database schema is defined in `/app/prisma/schema.prisma` and includes models for:
-
-- GitHub users
-- GitHub repositories
-- Repository contributions
-- User profiles
-- Job descriptions
-- Candidate rankings 
+- `/app/package.json`
+- `/app/.env.example`
+- `/app/app`
+- `/infra/docker/docker-compose.yml`
+- `/infra/fly/fly.toml`
