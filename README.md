@@ -2,7 +2,7 @@
 
 
 
-## 🚀 Pipeline Overview
+## Pipeline Overview
 
 1. Searches your keyword in the tiktok search bar 
 2. Scrapes the top 10 profiles from the top 10 videos of the search
