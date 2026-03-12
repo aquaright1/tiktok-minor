@@ -1,143 +1,125 @@
-# TikTok Minor
+# TikTok Miner
 
+TikTok Miner is a creator discovery and analytics application. The active codebase is a Next.js app in `app/` with a web UI, API routes, Prisma-backed persistence, and a Bun-powered CLI.
 
+## What It Does
 
-## Pipeline Overview
+- discovers creator profiles from keyword-based search workflows
+- stores and browses creators in a dashboard at `/creators`
+- runs scraping and pipeline-style discovery flows from `/scraper`
+- supports analytics, filtering, export-oriented workflows, and automated tests
 
-1. Searches your keyword in the tiktok search bar 
-2. Scrapes the top 10 profiles from the top 10 videos of the search
-3. Aggregates the last 30 days of analytics (views, shares, likes, comments; 1 mil views in the last 30 days of posts)
-4. Outputs to a dashboard to view/filter/sort/export the creators
+## Repo Layout
 
-### Installation
+```text
+tiktok-minor/
+├── app/                  # Main Next.js application and CLI
+├── docs/                 # Project documentation and reference guides
+├── specs/                # Product and technical specs
+├── docker-compose.yml    # Local service orchestration
+└── Dockerfile            # Container build for the app
+```
+
+Key app directories:
+
+```text
+app/
+├── app/                  # Next.js routes and API endpoints
+├── cli/                  # Bun CLI commands
+├── components/           # React components
+├── lib/                  # Business logic, integrations, utilities
+├── prisma/               # Prisma schema and migrations
+├── config/               # Tooling config, including Playwright
+└── .env.example          # Environment template
+```
+
+## Prerequisites
+
+- Bun 1.2+
+- Node.js 20+
+- PostgreSQL or Supabase Postgres
+
+## Getting Started
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/tiktok-miner.git
-cd tiktok-miner
-
-# Install dependencies
+git clone https://github.com/aquaright1/tiktok-minor.git
+cd tiktok-minor/app
 bun install
-
-# Set up environment variables
 cp .env.example .env.local
-# Edit .env.local with your configuration
+```
 
-# Initialize database
-bun run db:migrate
-bun run db:seed
+Update `.env.local` with the values your environment needs. The application expects database and Supabase settings at minimum:
 
-# Start development server
+```bash
+DATABASE_URL=postgresql://...
+DIRECT_URL=postgresql://...
+NEXT_PUBLIC_SUPABASE_URL=https://...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Optional integrations already wired in the template include:
+
+- `OPENAI_API_KEY`
+- `GITHUB_TOKEN`
+- `AZURE_EMAIL_CONNECTION_STRING`
+- SMTP settings
+
+## Run The App
+
+From `app/`:
+
+```bash
+bun x prisma generate
 bun run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
+The web app runs on [http://localhost:3000](http://localhost:3000). The root route redirects to `/creators`.
 
-### Docker Setup (Recommended)
+## Useful Commands
 
-```bash
-# Start all services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-## 📋 Environment Configuration
-
-Create a `.env.local` file with the following variables:
+Run these from `app/`:
 
 ```bash
+# Web app
+bun run dev
+bun run build
+bun run start
+
+# CLI
+bun run cli
+
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/tiktok_miner"
-REDIS_URL="redis://localhost:6379"
+bun run prisma:generate
+bun run prisma:migrate:deploy
 
-# External APIs
-APIFY_API_TOKEN="your_apify_token"
-OPENAI_API_KEY="your_openai_key"  # Optional for AI features
-
-# Application
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-JWT_SECRET="your_secure_jwt_secret"
-
-# Email (Optional)
-SMTP_HOST="smtp.example.com"
-SMTP_USER="your_email@domain.com"
-SMTP_PASS="your_password"
-```
-
-## 📖 Usage Guide
-
-### 1. Keyword Search
-Navigate to the **Search** page and enter keywords, hashtags, or topics:
-```
-Examples:
-- "fitness motivation"
-- "#cooking"
-- "tech reviews"
-- "dance trends"
-```
-
-
-## 🗂 Project Structure
-
-```
-tiktok-miner/
-├── app/                    # Next.js App Router
-│   ├── page.tsx           # Dashboard homepage
-│   ├── creators/          # Creator management pages
-│   ├── scraper/          # Search & scraping interface
-│   └── api/              # API routes
-├── components/            # React components
-│   ├── ui/               # Base UI components
-│   ├── creators/         # Creator-specific components
-│   └── charts/           # Data visualization
-├── lib/                  # Core libraries
-│   ├── db/               # Database utilities
-│   ├── api/              # API clients
-│   ├── scraper/          # Scraping services
-│   └── analytics/        # Analytics engine
-├── prisma/               # Database schema
-├── docs/                 # Documentation
-└── scripts/              # Utility scripts
-```
-
-## 🧪 Testing
-
-```bash
-# Run all tests
+# Tests
 bun run test
-
-# Run tests in watch mode
-bun run test:watch
-
-# Run integration tests
 bun run test:integration
-
-# Run E2E tests
 bun run test:e2e
-
-# Generate coverage report
 bun run test:coverage
 ```
 
-## 🚀 Deployment
+## Docker
 
-### Development
+The repo includes a root `docker-compose.yml` and `Dockerfile` for containerized runs:
+
 ```bash
-bun run dev
+docker compose up -d
+docker compose logs -f
+docker compose down
 ```
 
-### Production
-```bash
-bun run build
-bun run start
-```
+Check the compose file before first run and make sure the required environment variables are available to the app container.
 
-### Docker
-```bash
-docker-compose -f docker-compose.prod.yml up -d
-```
+## Documentation
+
+- [App README](./app/README.md)
+- [API setup guide](./docs/API_SETUP_GUIDE.md)
+- [Project structure](./docs/project-structure.md)
+- [Creator discovery architecture](./docs/creator-discovery-architecture.md)
+- [Testing guide](./docs/testing-guide.md)
+
+## Notes
+
+Some older documentation in this repository still refers to earlier project names and adjacent experiments. When in doubt, treat `app/package.json`, `app/.env.example`, and the live route structure under `app/app/` as the source of truth.
